@@ -87,8 +87,12 @@
             } else {
                 Class originalClass = [CDRSpyInfo originalClassForObject:self];
                 Method originalMethod = class_getInstanceMethod(originalClass, invocation.selector);
-
-                if (originalMethod) {
+                BOOL isKVOSelector =
+                sel_isEqual(invocation.selector, @selector(addObserver:forKeyPath:options:context:)) ||
+                sel_isEqual(invocation.selector, @selector(removeObserver:forKeyPath:)) ||
+                sel_isEqual(invocation.selector, @selector(removeObserver:forKeyPath:context:));
+                
+                if (originalMethod && !isKVOSelector) {
                     [invocation invokeUsingIMP:method_getImplementation(originalMethod)];
                 } else {
                     [self as_original_class:^{
