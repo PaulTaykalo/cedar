@@ -21,8 +21,15 @@ int runSpecsWithinUIApplication() {
     return exitStatus;
 }
 
+
+extern void __gcov_flush(void);
+
 void exitWithStatusFromUIApplication(int status) {
     UIApplication *application = [UIApplication sharedApplication];
+    NSLog(@"Calling gcov flush for coverage");
+    if (&__gcov_flush) {
+        __gcov_flush();
+    }
     SEL _terminateWithStatusSelector = NSSelectorFromString(@"_terminateWithStatus:");
     if ([application respondsToSelector:_terminateWithStatusSelector]) {
         [application performSelector:_terminateWithStatusSelector withObject:(id)status];
