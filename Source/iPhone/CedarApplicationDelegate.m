@@ -22,7 +22,8 @@ int runSpecsWithinUIApplication() {
 }
 
 
-extern void __gcov_flush(void);
+void __attribute__((weak)) __gcov_flush(void) {
+}
 
 void exitWithStatusFromUIApplication(int status) {
     UIApplication *application = [UIApplication sharedApplication];
